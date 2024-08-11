@@ -1,0 +1,51 @@
+This was taken from a linodes cluster with region ca-central (toronto)
+arnob@msi ~> kubectl logs -n kubedb -f pod/kubedb-kubedb-provisioner-74dbfb8bf4-cpqts -c wait
+
+WAIT: service -lapp.kubernetes.io/name=kubedb-webhook-server
+No error on jq : app.kubernetes.io/instance=kubedb,app.kubernetes.io/name=kubedb-webhook-server
+Successfully calculated pod state : FalseReady
+After the massacre with TREAT_ERRORS_AS_READY 0 : False
+2 1 --- False
+2 2 --- False
+Returned from get_pod_state func : app.kubernetes.io/instance=kubedb app.kubernetes.io/name=kubedb-webhook-server -- False
+
+[2024-08-11 07:38:03] Waiting for service -lapp.kubernetes.io/name=kubedb-webhook-server...
+No error on jq : app.kubernetes.io/instance=kubedb,app.kubernetes.io/name=kubedb-webhook-server
+Successfully calculated pod state : FalseReady
+After the massacre with TREAT_ERRORS_AS_READY 0 : False
+2 1 --- False
+2 2 --- False
+Returned from get_pod_state func : app.kubernetes.io/instance=kubedb app.kubernetes.io/name=kubedb-webhook-server -- False
+
+[2024-08-11 07:38:06] Waiting for service -lapp.kubernetes.io/name=kubedb-webhook-server...
+No error on jq : app.kubernetes.io/instance=kubedb,app.kubernetes.io/name=kubedb-webhook-server
+Successfully calculated pod state : FalseReady
+After the massacre with TREAT_ERRORS_AS_READY 0 : False
+2 1 --- False
+2 2 --- False
+Returned from get_pod_state func : app.kubernetes.io/instance=kubedb app.kubernetes.io/name=kubedb-webhook-server -- False
+
+[2024-08-11 07:38:11] Waiting for service -lapp.kubernetes.io/name=kubedb-webhook-server...
+No error on jq : app.kubernetes.io/instance=kubedb,app.kubernetes.io/name=kubedb-webhook-server
+Successfully calculated pod state : FalseReady
+After the massacre with TREAT_ERRORS_AS_READY 0 : False
+2 1 --- False
+2 2 --- False
+Returned from get_pod_state func : app.kubernetes.io/instance=kubedb app.kubernetes.io/name=kubedb-webhook-server -- False
+
+[2024-08-11 07:38:17] Waiting for service -lapp.kubernetes.io/name=kubedb-webhook-server...
+No error on jq : app.kubernetes.io/instance=kubedb,app.kubernetes.io/name=kubedb-webhook-server
+Successfully calculated pod state : FalseReady
+After the massacre with TREAT_ERRORS_AS_READY 0 : False
+2 1 --- False
+2 2 --- False
+Returned from get_pod_state func : app.kubernetes.io/instance=kubedb app.kubernetes.io/name=kubedb-webhook-server -- False
+
+[2024-08-11 07:38:27] Waiting for service -lapp.kubernetes.io/name=kubedb-webhook-server...
+No error on jq : app.kubernetes.io/instance=kubedb,app.kubernetes.io/name=kubedb-webhook-server
+Successfully calculated pod state : Ready
+After the massacre with TREAT_ERRORS_AS_READY 0 :
+2 1 ---
+2 2 ---
+Returned from get_pod_state func : app.kubernetes.io/instance=kubedb app.kubernetes.io/name=kubedb-webhook-server --
+[2024-08-11 07:38:32] service -lapp.kubernetes.io/name=kubedb-webhook-server is ready.

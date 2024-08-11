@@ -42,3 +42,8 @@ clean:
 	rm -f $(NON_ROOT_DOCKERFILE)
 	if docker buildx inspect $(BUILDER_NAME) 2> /dev/null ; then docker buildx rm $(BUILDER_NAME) ; fi
 	$(foreach TAG,$(DOCKER_TAGS),docker rmi -f $(TAG); )
+
+container:
+	docker build -t arnobkumarsaha/k8s-wait-for .
+	docker push arnobkumarsaha/k8s-wait-for
+	kind load docker-image arnobkumarsaha/k8s-wait-for

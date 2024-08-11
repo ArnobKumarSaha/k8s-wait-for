@@ -9,7 +9,7 @@ TOP_PID=$$
 
 KUBECTL_ARGS=""
 WAIT_TIME="${WAIT_TIME:-2}" # seconds
-DEBUG="${DEBUG:-0}"
+DEBUG="${DEBUG:-2}"
 TREAT_ERRORS_AS_READY="${TREAT_ERRORS_AS_READY:-0}"
 
 usage() {
@@ -97,11 +97,11 @@ get_pod_state() {
             echo "No pods found, waiting for them to be created..." >&2
             echo "$get_pod_state_output1" >&2
         else
-            echo "$get_pod_state_output1" >&2
+            echo "Error on pod state calculation : $get_pod_state_output1" >&2
             kill -s TERM $TOP_PID
         fi
     elif [ $DEBUG -ge 2 ]; then
-        echo "$get_pod_state_output1" >&2
+        echo "Successfully calculated pod state : $get_pod_state_output1" >&2
     fi
 
     if [ $TREAT_ERRORS_AS_READY -eq 0 ]; then
@@ -115,15 +115,16 @@ get_pod_state() {
           get_pod_state_output1='No pods ready'
         fi
     fi
+    echo "After the massacre with TREAT_ERRORS_AS_READY $TREAT_ERRORS_AS_READY : $get_pod_state_output1" >&2
 
     if [ $DEBUG -ge 1 ]; then
-        echo "$get_pod_state_output1" >&2
+        echo "$DEBUG 1 --- $get_pod_state_output1" >&2
     fi
 
     get_pod_state_output2=$(printf "%s" "$get_pod_state_output1" | xargs )
 
     if [ $DEBUG -ge 1 ]; then
-        echo "$get_pod_state_output2" >&2
+        echo "$DEBUG 2 --- $get_pod_state_output2" >&2
     fi
     echo "$get_pod_state_output2"
 }
@@ -134,10 +135,10 @@ get_service_state() {
     get_service_state_name="$1"
     get_service_state_selectors=$(kubectl get service "$get_service_state_name" $KUBECTL_ARGS -ojson | jq -cr 'if . | has("items") then .items[] else . end | [ .spec.selector | to_entries[] | "\(.key)=\(.value)" ] | join(",") ' 2>&1)
     if [ $? -ne 0 ]; then
-        echo "$get_service_state_selectors" >&2
+        echo "Error on jq : $get_service_state_selectors" >&2
         kill -s TERM $TOP_PID
     elif [ $DEBUG -ge 2 ]; then
-        echo "$get_service_state_selectors" >&2
+        echo "No error on jq : $get_service_state_selectors" >&2
     fi
     get_service_state_states=""
     if [ "$get_service_state_selectors" = "" ] ; then
@@ -147,6 +148,7 @@ get_service_state() {
         for get_service_state_selector in $get_service_state_selectors ; do
             get_service_state_selector=$(echo "$get_service_state_selector" | tr ',' ' ')
             get_service_state_state=$(get_pod_state -l"$get_service_state_selectors")
+            echo "Returned from get_pod_state func : ${get_service_state_selector} -- ${get_service_state_state}" >&2
             get_service_state_states="${get_service_state_states}${get_service_state_state}" ;
         done
     fi
@@ -219,10 +221,12 @@ get_job_state() {
 wait_for_resource() {
     wait_for_resource_type=$1
     wait_for_resource_descriptor="$2"
+    echo "WAIT: ${wait_for_resource_type} ${wait_for_resource_descriptor}"
     while [ -n "$(get_${wait_for_resource_type}_state "$wait_for_resource_descriptor")" ] ; do
         print_KUBECTL_ARGS="$KUBECTL_ARGS"
         [ "$print_KUBECTL_ARGS" != "" ] && print_KUBECTL_ARGS=" $print_KUBECTL_ARGS"
         timestamp=$(date +'%Y-%m-%d %H:%M:%S')
+        echo ""
         echo "[$timestamp] Waiting for $wait_for_resource_type $wait_for_resource_descriptor${print_KUBECTL_ARGS}..."
         sleep "$WAIT_TIME"
     done
